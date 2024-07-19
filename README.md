@@ -1,20 +1,19 @@
-#### Java Web Image Crawler
+<h1>Java Web Image Crawler</h1>
 
-### Functionality
-We expect your submission to be able to achieve the following goals:
-- Build a web crawler that can find all images on the web page(s) that it crawls.
+## Functionality
+- Web crawler that can find all images on the web page(s) that it crawls.
 - Crawl sub-pages to find more images.
-- Implement multi-threading so that the crawl can be performed on multiple sub-pages at a time.
-- Keep your crawl within the same domain as the input URL.
+- Implemented multi-threading so that the crawl can be performed on multiple sub-pages at a time.
+- Crawl within the same domain as the input URL.
 - Avoid re-crawling any pages that have already been visited.
 
-### Requirements
+## Requirements
 Before beginning, make sure you have the following installed and ready to use
 - Maven 3.5 or higher
 - Java 8
   - Exact version, **NOT** Java 9+ - the build will fail with a newer version of Java
 
-### Setup
+## Setup
 To start, open a terminal window and navigate to wherever you unzipped to the root directory `imagefinder`. To build the project, run the command:
 
 >`mvn package`
