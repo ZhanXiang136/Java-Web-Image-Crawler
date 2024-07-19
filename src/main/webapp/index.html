@@ -1,0 +1,177 @@
+<html>
+<head>
+	<style>
+		/* Global styles */
+		body {
+		  box-sizing: border-box;
+		  font-family: 'Roboto', sans-serif;
+		  font-size: 16px;
+		  line-height: 1.5;
+		  margin: 0;
+		  padding: 0;
+		  color: #fff;
+		  background-color: #bfbfbf;
+		}
+
+		*, *:before, *:after {
+			box-sizing: inherit;
+		}
+
+		a {
+		  color: #fff;
+		  text-decoration: none;
+		}
+
+		ul {
+			list-style: none;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			align-content: center;
+			flex-wrap: wrap;
+		}
+
+		li {
+			padding: 10px;
+		}
+
+		div.content {
+			margin: 50px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+		}
+
+		div.card {
+			height: 450px;
+			width: 750px;
+			padding: 30px;
+			background-color: #111;
+			border-radius: 50px;
+			overflow: hidden;
+		}
+
+		button {
+		  background-color: #808080;
+		  border: none;
+		  border-radius: 5px;
+		  color: #fff;
+		  cursor: pointer;
+		  font-size: 16px;
+		  padding: 10px 20px;
+		  transition: background-color 0.3s ease;
+		}
+
+		button:hover {
+		  background-color: #005fbf;
+		}
+
+		input[type="text"] {
+		  background-color: #fff;
+		  border: none;
+		  border-radius: 5px;
+		  color: #333;
+		  font-size: 16px;
+		  padding: 10px;
+		  width: 100%;
+		  margin-bottom: 20px;
+		}
+
+		input[type="text"]:focus {
+		  outline: none;
+		  box-shadow: 0 0 3px 3px rgba(31, 110, 235, 0.3);
+		}
+
+		.input {
+			padding: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="content">
+		<div class="card">
+			<p>Enter a website!</p>
+			<div class="input">
+				<form>
+					<input type="text" name="url">
+				</form>
+				<button type="button" class="submit">Submit!</button>
+			</div>
+
+			<div class="input">
+				<button type="button" class="more">Crawl More!</button>
+			</div>
+
+			<p class="websites">Websites Crawled Count: </p>
+			<p class="images">Image Scraped Count: </p>
+			<p class="message">Message: </p>
+
+		</div>
+		<div class="output">
+			<ul class="results">
+
+			</ul>
+		</div>
+	</div>
+	<script>
+		var resultList = document.querySelector('ul.results');
+		var urlInput = document.querySelector('input[name=url]');
+		var message = document.querySelector('p.message');
+		var images = document.querySelector('p.images');
+		var websites = document.querySelector('p.websites');
+
+
+		apiCallBack = function(xhr, callback) {
+			if (xhr.readyState == XMLHttpRequest.DONE) {
+				if (xhr.status != 200) {
+					let message = xhr.status + ":" + xhr.statusText + ":"
+							+ xhr.responseText;
+					alert(message);
+					throw 'API call returned bad code: ' + xhr.status;
+				}
+				let response = xhr.responseText ? JSON.parse(xhr.responseText)
+						: null;
+				if (callback) {
+					callback(response);
+				}
+			}
+		}
+
+		updateList = function(response) {
+			websites.innerHTML = "Websites Crawled Count: " + response[0];
+			images.innerHTML = "Image Scraped Count: " + response[1];
+			message.innerHTML = "Message: " + response[2];
+
+			resultList.innerHTML = '';
+			for (var i = 3; i < response.length; i++) {
+				var ele = document.createElement("li");
+				var img = document.createElement("img");
+				img.width = 200;
+				img.src = response[i];
+				ele.appendChild(img);
+				resultList.appendChild(ele);
+			}
+		}
+
+		makeApiCall = function(url, method, obj, callback) {
+			let xhr = new XMLHttpRequest();
+			xhr.open(method, url);
+			xhr.onreadystatechange = apiCallBack.bind(null, xhr, callback);
+			xhr.send(obj ? obj instanceof FormData || obj.constructor == String ? obj : JSON.stringify(obj) : null);
+		}
+
+		document.querySelector('button.submit').addEventListener("click", function(event) {
+			event.preventDefault();
+			makeApiCall('/main?url=' + urlInput.value, 'POST', null, updateList);
+		});
+
+		document.querySelector('button.more').addEventListener("click", function(event) {
+			event.preventDefault();
+			makeApiCall('/main', 'POST', null, updateList);
+		});
+	</script>
+</body>
+
+</html>
